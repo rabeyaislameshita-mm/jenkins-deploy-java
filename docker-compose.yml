@@ -1,0 +1,41 @@
+services:
+  registry:
+    image: registry:2
+    container_name: local-registry
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry_data:/var/lib/registry
+    networks:
+      - cicd
+
+  jenkins:
+    build:
+      context: ./jenkins
+    container_name: jenkins-blueocean
+    restart: unless-stopped
+    user: root
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - JENKINS_ADMIN_ID=admin
+      - JENKINS_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./:/var/jenkins_home/repo
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - registry
+    networks:
+      - cicd
+
+volumes:
+  jenkins_home:
+  registry_data:
+
+networks:
+  cicd:
+    driver: bridge

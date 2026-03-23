@@ -1,0 +1,10 @@
+blueocean
+workflow-aggregator
+workflow-job
+workflow-cps
+docker-workflow
+job-dsl
+credentials
+git
+matrix-auth
+configuration-as-code
